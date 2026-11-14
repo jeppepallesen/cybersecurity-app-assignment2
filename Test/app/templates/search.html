@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Search notes · Studyspace{% endblock %}
+{% block content %}
+<section class="search-page"><p class="eyebrow">Find a thought again</p><h1>Search your notes</h1><form class="search-form" method="get"><label class="visually-hidden" for="q">Search title and note content</label><input id="q" type="search" name="q" value="{{ query }}" placeholder="Try a title or a phrase..." autofocus><button class="button button-primary" type="submit">Search <span aria-hidden="true">↗</span></button></form>
+{% if query %}<p class="results-label">{{ notes|length }} {{ 'result' if notes|length == 1 else 'results' }} for “{{ query }}”</p>{% if notes %}<div class="search-results">{% for note in notes %}<a class="search-result" href="{{ url_for('main.edit_note', note_id=note.id) }}"><span class="note-date">{{ note.created_at.strftime('%b %d, %Y') }}</span><h2>{{ note.title }}</h2><p>{{ note.content|truncate(220) }}</p><span class="tile-arrow" aria-hidden="true">↗</span></a>{% endfor %}</div>{% else %}<div class="empty-state search-empty"><span class="empty-icon">⌕</span><p>No notes matched that search. Try another word.</p></div>{% endif %}{% endif %}
+</section>
+{% endblock %}

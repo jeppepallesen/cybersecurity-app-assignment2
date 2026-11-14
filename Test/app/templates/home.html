@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Overview · Studyspace{% endblock %}
+{% block content %}
+<section class="page-heading home-heading">
+  <div><p class="eyebrow">Your study desk</p><h1>Good to see you, {{ g.user.username }}.</h1><p class="muted">A little progress, one clear next step at a time.</p></div>
+  <a class="button button-primary" href="{{ url_for('main.create_task') }}"><span aria-hidden="true">+</span> New task</a>
+</section>
+<div class="dashboard-grid">
+  <section class="section-block task-block">
+    <div class="section-heading"><div><p class="eyebrow">Keep moving</p><h2>Up next</h2></div><a class="quiet-link" href="{{ url_for('main.tasks') }}">All tasks <span aria-hidden="true">→</span></a></div>
+    {% if tasks %}<div class="task-list">{% for task in tasks %}
+      <article class="task-row {% if task.completed %}is-complete{% endif %}">
+        <form method="post" action="{{ url_for('main.toggle_task', task_id=task.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="check-button" type="submit" aria-label="Mark {{ task.title }} {% if task.completed %}incomplete{% else %}complete{% endif %}">{% if task.completed %}✓{% endif %}</button></form>
+        <div class="task-copy"><a href="{{ url_for('main.edit_task', task_id=task.id) }}" class="item-title">{{ task.title }}</a><span>{{ task.description or 'No description' }}</span></div>
+        <time class="due-date" datetime="{{ task.due_date.isoformat() }}">{{ task.due_date.strftime('%b %d') }}</time>
+      </article>
+    {% endfor %}</div>{% else %}<div class="empty-state"><span class="empty-icon">✓</span><p>No tasks yet. Enjoy the breathing room.</p><a href="{{ url_for('main.create_task') }}">Add a task</a></div>{% endif %}
+  </section>
+  <section class="section-block notes-block">
+    <div class="section-heading"><div><p class="eyebrow">Your thoughts</p><h2>Recent notes</h2></div><a class="quiet-link" href="{{ url_for('main.notes') }}">All notes <span aria-hidden="true">→</span></a></div>
+    {% if notes %}<div class="note-grid">{% for note in notes %}<a class="note-tile note-tone-{{ loop.index0 % 3 }}" href="{{ url_for('main.edit_note', note_id=note.id) }}"><span class="note-date">{{ note.created_at.strftime('%b %d') }}</span><h3>{{ note.title }}</h3><p>{{ note.content|truncate(125) or 'An empty page, ready for an idea.' }}</p><span class="tile-arrow" aria-hidden="true">↗</span></a>{% endfor %}</div>{% else %}<div class="empty-state"><span class="empty-icon">✎</span><p>Your notes will find a home here.</p><a href="{{ url_for('main.create_note') }}">Write your first note</a></div>{% endif %}
+  </section>
+</div>
+{% endblock %}

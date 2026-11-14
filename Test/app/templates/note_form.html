@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit note' if note else 'New note' }} · Studyspace{% endblock %}
+{% block content %}
+<section class="form-page"><a class="back-link" href="{{ url_for('main.notes') }}">← All notes</a><p class="eyebrow">{{ 'Refine your thoughts' if note else 'Catch that thought' }}</p><h1>{{ 'Edit note' if note else 'New note' }}</h1>
+  <form method="post" class="editor-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label for="title">Title</label><input id="title" name="title" maxlength="160" value="{{ note.title if note else '' }}" placeholder="Give this note a name" required autofocus><label for="content">Your note</label><textarea id="content" name="content" rows="12" placeholder="Start writing...">{{ note.content if note else '' }}</textarea><div class="form-actions"><a class="button button-quiet" href="{{ url_for('main.notes') }}">Cancel</a><button class="button button-primary" type="submit">{{ 'Save changes' if note else 'Save note' }}</button></div></form>
+</section>
+{% endblock %}

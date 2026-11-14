@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit task' if task else 'New task' }} · Studyspace{% endblock %}
+{% block content %}
+<section class="form-page"><a class="back-link" href="{{ url_for('main.tasks') }}">← All tasks</a><p class="eyebrow">{{ 'Adjust the details' if task else 'Make a little plan' }}</p><h1>{{ 'Edit task' if task else 'New task' }}</h1>
+  <form method="post" class="editor-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label for="title">Title</label><input id="title" name="title" maxlength="160" value="{{ task.title if task else '' }}" placeholder="What needs doing?" required autofocus><label for="description">Description</label><textarea id="description" name="description" rows="5" placeholder="Add a few details">{{ task.description if task else '' }}</textarea><label for="due_date">Due date</label><input id="due_date" name="due_date" type="date" value="{{ task.due_date.isoformat() if task else '' }}" required>{% if task %}<label class="check-label"><input type="checkbox" name="completed" {% if task.completed %}checked{% endif %}> Mark as complete</label>{% endif %}<div class="form-actions"><a class="button button-quiet" href="{{ url_for('main.tasks') }}">Cancel</a><button class="button button-primary" type="submit">{{ 'Save changes' if task else 'Save task' }}</button></div></form>
+</section>
+{% endblock %}

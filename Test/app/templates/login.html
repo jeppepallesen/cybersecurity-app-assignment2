@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Studyspace{% endblock %}
+{% block content %}
+<section class="login-layout">
+  <div class="login-intro">
+    <div class="login-symbol" aria-hidden="true"><span></span><span></span><span></span></div>
+    <p class="eyebrow">A calmer way to study</p>
+    <h1>Your work,<br><em>in one place.</em></h1>
+    <p class="intro-copy">Keep your class notes close and your next steps clear.</p>
+  </div>
+  <section class="login-panel" aria-labelledby="login-title">
+    <p class="eyebrow">Welcome back</p>
+    <h2 id="login-title">Sign in</h2>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="username">Username</label>
+      <input id="username" name="username" autocomplete="username" required autofocus>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="button button-primary button-wide" type="submit">Sign in <span aria-hidden="true">→</span></button>
+    </form>
+  </section>
+</section>
+{% endblock %}

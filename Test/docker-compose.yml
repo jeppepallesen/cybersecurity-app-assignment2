@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: student_notes
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER:-student}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?Set POSTGRES_ADMIN_PASSWORD in the environment}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?Set APP_DB_PASSWORD in the environment}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init/00-create-runtime-role.sql:/docker-entrypoint-initdb.d/00-create-runtime-role.sql:ro
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/init/02-grant-runtime-role.sql:/docker-entrypoint-initdb.d/02-grant-runtime-role.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg2://student_app:${APP_DB_PASSWORD:?Set APP_DB_PASSWORD in the environment}@db:5432/student_notes
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in the environment before starting the application}
+      APP_ENV: ${APP_ENV:-production}
+      FLASK_DEBUG: "0"
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-true}
+      ENABLE_HSTS: ${ENABLE_HSTS:-false}
+    ports:
+      - "127.0.0.1:5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

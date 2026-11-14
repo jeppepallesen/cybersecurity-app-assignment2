@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7f5">
+  <title>{% block title %}Student Notes and Tasks{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+  {% if g.user %}
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('main.home') }}"><span class="brand-mark">S</span><span>study<span class="brand-light">space</span></span></a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a class="{% if request.endpoint == 'main.home' %}active{% endif %}" href="{{ url_for('main.home') }}">Overview</a>
+      <a class="{% if request.endpoint in ['main.notes', 'main.create_note', 'main.edit_note'] %}active{% endif %}" href="{{ url_for('main.notes') }}">Notes</a>
+      <a class="{% if request.endpoint in ['main.tasks', 'main.create_task', 'main.edit_task'] %}active{% endif %}" href="{{ url_for('main.tasks') }}">Tasks</a>
+      <a class="{% if request.endpoint == 'main.search' %}active{% endif %}" href="{{ url_for('main.search') }}">Search</a>
+    </nav>
+    <div class="account-area"><span class="avatar">{{ g.user.username[0]|upper }}</span><span class="account-name">{{ g.user.username }}</span><form action="{{ url_for('main.logout') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-button" type="submit">Log out</button></form></div>
+  </header>
+  {% endif %}
+  <main class="page-shell {% if not g.user %}login-shell{% endif %}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}<div class="flash-stack" role="status">{% for category, message in messages %}<div class="flash flash-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

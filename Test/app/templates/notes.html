@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Notes · Studyspace{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">Collected thoughts</p><h1>Your notes</h1><p class="muted">Small details worth keeping.</p></div><a class="button button-primary" href="{{ url_for('main.create_note') }}"><span aria-hidden="true">+</span> New note</a></section>
+{% if notes %}<section class="note-grid notes-page-grid">{% for note in notes %}<article class="note-tile note-tone-{{ loop.index0 % 3 }}"><span class="note-date">{{ note.created_at.strftime('%b %d, %Y') }}</span><h2>{{ note.title }}</h2><p class="note-content">{{ note.content or 'An empty page, ready for an idea.' }}</p><div class="tile-actions"><a href="{{ url_for('main.edit_note', note_id=note.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_note', note_id=note.id) }}" data-confirm="Delete this note?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="danger-link" type="submit">Delete</button></form></div></article>{% endfor %}</section>{% else %}<div class="empty-state large-empty"><span class="empty-icon">✎</span><h2>A fresh page</h2><p>Start collecting the useful bits from class.</p><a class="button button-primary" href="{{ url_for('main.create_note') }}">Write a note</a></div>{% endif %}
+{% endblock %}
